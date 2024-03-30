@@ -21,14 +21,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             TicTacToeTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                /*Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Greeting("Android")
-                }
+                }*/
+                Game()
             }
         }
     }
 }
-
+/*
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
@@ -44,10 +45,11 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+*/
 
 @Composable
-fun Game(name: String, modifier: Modifier = Modifier) {
-    Text(text = name, modifier = modifier)
+fun Game() {
+    Text(text = "Let's play Tic-tac-Toe!")
 
     // Create 9 buttons for the grid. I wish this was XML...???!!!
     lateinit var buttons: Array<Button>
@@ -55,11 +57,9 @@ fun Game(name: String, modifier: Modifier = Modifier) {
         val x = i % 3
         val y = i / 3
         buttons.set(i, Button(
-            text = "Slot $x,$y",
-            modifier = modifier
+            text = "Slot $x,$y"
         )
     }
-    Button
 }
 
 @Preview
