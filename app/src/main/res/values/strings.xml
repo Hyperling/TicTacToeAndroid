@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Tic-Tac-Toe</string>
+
+    <string name="player_choice_header">Choose your opponent:</string>
+    <string name="player_choice_1">Friend, someone next to you.</string>
+    <string name="player_choice_2">AI : Random, fills any open spot.</string>
+    <string name="player_choice_3">AI : Hard, tries to win.</string>
+    <string name="player_choice_4">AI : Stubborn, tries to tie.</string>
 </resources>
