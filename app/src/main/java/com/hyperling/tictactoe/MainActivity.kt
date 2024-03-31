@@ -1,42 +1,16 @@
 package com.hyperling.tictactoe
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hyperling.tictactoe.ui.theme.TicTacToeTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 //Surface( modifier = Modifier.fillMaxSize()
                 //    , color = MaterialTheme.colorScheme.background
                 //) {
-                    Game(this)
+                    Game()
                 //}
             }
         }
@@ -82,7 +55,8 @@ class MainActivity : ComponentActivity() {
 // https://tigeroakes.com/posts/mutablestateof-list-vs-mutablestatelistof/
 
 @Composable
-fun Game(context: Context) {
+fun Game() {
+    val context = LocalContext.current
 
     // Shown on the screen.
     val grid = remember { mutableStateListOf<String>() }
@@ -107,9 +81,8 @@ fun Game(context: Context) {
     var opponentEasy by remember { mutableStateOf(false) }
     var opponentAnnoying by remember { mutableStateOf(false) }
 
-    if (player == "X") {
-        opponent = "O"
-    } else {
+    opponent = "O"
+    if (player == "O") {
         opponent = "X"
     }
 
@@ -156,7 +129,7 @@ fun Game(context: Context) {
         lastTurn = "O"
     }
 
-    /* AI logic. * /
+    /* AI logic. */
     if (turn == opponent) {
         var play = -1
         if (opponentRandom) {
@@ -264,10 +237,9 @@ fun Game(context: Context) {
 
 
         /* Clear, restart, start new game button. */
-        if (showClear) {
+        clearText = "Restart"
+        if (!showClear) {
             clearText = "Start New Game"
-        } else {
-            clearText = "Restart"
         }
         Row {
             FilledTonalButton(onClick = { newGame = true }) {
@@ -299,14 +271,16 @@ fun Game(context: Context) {
                         context,
                         "AI is now playing as $opponent.",
                         Toast.LENGTH_SHORT
-                    )
-                    Toast.makeText(
-                        context,
-                        "Game has been cleared.",
-                        Toast.LENGTH_LONG
-                    )
-                    gameOver = true
-                    newGame = true
+                    ).show()
+                    if (!gameOver) {
+                        Toast.makeText(
+                            context,
+                            "Game has been cleared.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        gameOver = true
+                        newGame = true
+                    }
                 }
             )
         }
@@ -400,7 +374,7 @@ fun Game(context: Context) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { /* TBD */ },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
@@ -422,7 +396,7 @@ fun Game(context: Context) {
                 }
                 Spacer(modifier = Modifier.weight(0.05f))
                 OutlinedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { /* TBD */ },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
@@ -451,7 +425,7 @@ fun Game(context: Context) {
 // */
 @Composable
 fun PreviewGame() {
-    Game(LocalContext.current)
+    Game()
 }
 
 // Check whether any winning conditions have been met.
@@ -519,7 +493,7 @@ private fun changeTurn(turn: String): String {
 
 /* AI Players */
 private fun playRandomMove(grid: MutableList<String>): Int {
-    var random = Random(9)
+    val random = Random(9)
     var choice = random.nextInt()
     while (grid[choice].isNotBlank() && choice < 9) {
         choice = random.nextInt()
@@ -533,6 +507,9 @@ private fun playRandomMove(grid: MutableList<String>): Int {
 //   2 - Plays to tie
 // Returns the grid number which should get the AI's mark.
 fun playWeightedMove(grid: MutableList<String>, behavior: Int, turn: String) : Int {
+    if (behavior != -1 && turn == "O") {
+        return playRandomMove(grid)
+    }
     return -1
 }
 
