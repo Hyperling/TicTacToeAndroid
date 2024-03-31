@@ -329,7 +329,7 @@ fun Game() {
 
 
         /* Opponent difficulty radio buttons. */
-        // TODO: Make an array and build the radio buttons dynamically.
+        // TBD: Make an array and build the radio buttons dynamically.
         /*
             MyRadioChoice {
                 selected: Boolean,
