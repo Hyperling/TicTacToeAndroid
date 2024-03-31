@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,7 +117,7 @@ fun Game() {
         lastTurn = "O"
     }
 
-    /* AI logic. * /
+    /* AI logic. */
     if (turn == opponent) {
         var play = -1
         if (opponentRandom) {
@@ -133,6 +131,8 @@ fun Game() {
         }
         if (!opponentHuman) {
             grid[play] = opponent
+            status = checkGrid(grid)
+            turn = changeTurn(turn)
         }
     }
     // */
@@ -144,7 +144,7 @@ fun Game() {
             .fillMaxSize()
     ) {
 
-        Spacer(modifier = Modifier.weight(0.05f))
+        Spacer(modifier = Modifier.weight(0.2f))
 
         /* Header text. */
         Column (
@@ -221,9 +221,8 @@ fun Game() {
                 }
             }
         }
-        Spacer(modifier = Modifier.weight(0.05f))
+        Spacer(modifier = Modifier.size(10.dp))
         // */
-
 
         /* Clear, restart, start new game button. */
         clearText = "Restart"
@@ -261,7 +260,7 @@ fun Game() {
                         Toast.makeText(
                             context,
                             "Game has been cleared.",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                         gameOver = true
                         newGame = true
@@ -364,17 +363,19 @@ fun Game() {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val website = stringResource(id = R.string.uri_website)
+                val text1 = stringResource(id = R.string.link1_text)
+                val uri1 = stringResource(id = R.string.link1_uri)
                 OutlinedButton(
                     onClick = {
-                        uriHandler.openUri(website)
+                        uriHandler.openUri(uri1)
                     },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
                 ) {
                     Text(
-                        text = "Website"
+                        text = text1,
+                        fontSize = 12.sp
                     )
                 }
 
@@ -393,17 +394,19 @@ fun Game() {
 
                 Spacer(modifier = Modifier.weight(0.05f))
 
-                val github = stringResource(id = R.string.uri_github)
+                val text2 = stringResource(id = R.string.link2_text)
+                val uri2 = stringResource(id = R.string.link2_uri)
                 OutlinedButton(
                     onClick = {
-                        uriHandler.openUri(github)
+                        uriHandler.openUri(uri2)
                     },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
                 ) {
                     Text(
-                        text = "GitHub"
+                        text = text2,
+                        fontSize = 12.sp
                     )
                 }
             }
@@ -412,7 +415,7 @@ fun Game() {
     }
 }
 
-/* */
+/* Light Theme * /
 @Preview(
     name = "Normal"
     , showBackground = true
@@ -421,13 +424,13 @@ fun Game() {
     //, showSystemUi = true
 )
 // */
-/* */
+/* Dark Theme */
 @Preview(
-    name = "Dark"
+    name = "Night"
     , showBackground = true
     , uiMode = Configuration.UI_MODE_NIGHT_YES
     , device = Devices.PIXEL_3A
-    , showSystemUi = true
+    //, showSystemUi = true
 )
 // */
 @Composable
@@ -504,11 +507,11 @@ private fun changeTurn(turn: String): String {
 
 /* AI Players */
 private fun playRandomMove(grid: MutableList<String>): Int {
-    val random = Random(9)
-    var choice = random.nextInt()
-    while (grid[choice].isNotBlank() && choice < 9) {
-        choice = random.nextInt()
+    var choice: Int
+    do {
+        choice = (0..9).random()
     }
+    while (grid[choice].isNotBlank() && choice > 0)
     return choice
 }
 

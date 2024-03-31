@@ -8,6 +8,8 @@
     <string name="opponent_easy">AI : Easy, tries to make you win.</string>
     <string name="opponent_annoying">AI : Stubborn, tries to tie.</string>
 
-    <string name="uri_website">https://Hyperling.com</string>
-    <string name="uri_github">https://github.com/Hyperling/TicTacToeAndroid</string>
+    <string name="link1_text">Website</string>
+    <string name="link1_uri">https://Hyperling.com</string>
+    <string name="link2_text">GitHub</string>
+    <string name="link2_uri">https://github.com/Hyperling/TicTacToeAndroid</string>
 </resources>
