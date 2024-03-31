@@ -20,11 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import com.hyperling.tictactoe.ui.theme.TicTacToeTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.random.Random
@@ -34,27 +34,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TicTacToeTheme {
-                // A surface container using the 'background' color from the theme
-                //Surface( modifier = Modifier.fillMaxSize()
-                //    , color = MaterialTheme.colorScheme.background
-                //) {
+                Surface {
                     Game()
-                //}
+                }
             }
         }
     }
 }
-
-// https://stackoverflow.com/questions/68882402/how-to-change-text-value-when-a-button-is-clicked-in-jetpack-compose
-// https://jetpackcomposeworld.com/buttons-in-jetpack-compose/
-
-// Compose crash course.
-// https://www.youtube.com/watch?v=6_wK_Ud8--0
-// Gets into states and using a button to change things.
-// https://youtu.be/6_wK_Ud8--0?feature=shared&t=1770
-
-// How to use lists in state.
-// https://tigeroakes.com/posts/mutablestateof-list-vs-mutablestatelistof/
 
 @Composable
 fun Game() {
@@ -133,7 +119,7 @@ fun Game() {
         lastTurn = "O"
     }
 
-    /* AI logic. */
+    /* AI logic. * /
     if (turn == opponent) {
         var play = -1
         if (opponentRandom) {
@@ -156,10 +142,9 @@ fun Game() {
         , verticalArrangement = Arrangement.Center
         , modifier = Modifier
             .fillMaxSize()
-            .background(Color.DarkGray)
     ) {
 
-        Spacer(modifier = Modifier.weight(0.1f))
+        Spacer(modifier = Modifier.weight(0.05f))
 
         /* Header text. */
         Column (
@@ -187,7 +172,7 @@ fun Game() {
             Text(
                 text = mainText,
                 textAlign = TextAlign.Center,
-                fontSize = 32.sp,
+                fontSize = 24.sp,
                 modifier = Modifier.clickable {
                     mainClicks++
                 }
@@ -195,7 +180,7 @@ fun Game() {
             Text(
                 text = msg,
                 textAlign = TextAlign.Center,
-                fontSize = 32.sp,
+                fontSize = 20.sp,
                 modifier = Modifier
                     .padding(10.dp)
             )
@@ -227,7 +212,7 @@ fun Game() {
                         ) {
                             Text(
                                 text = grid[index],
-                                fontSize = 24.sp,
+                                fontSize = 28.sp,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -242,13 +227,13 @@ fun Game() {
 
         /* Clear, restart, start new game button. */
         clearText = "Restart"
-        if (!showClear) {
+        if (showClear) {
             clearText = "Start New Game"
         }
         Row {
             FilledTonalButton(onClick = { newGame = true }) {
                 Text(
-                    text = clearText, fontSize = 18.sp
+                    text = clearText, fontSize = 16.sp
                 )
             }
         }
@@ -271,11 +256,7 @@ fun Game() {
                         "X" -> player = "O"
                         "O" -> player = "X"
                     }
-                    Toast.makeText(
-                        context,
-                        "AI is now playing as $opponent.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
                     if (!gameOver) {
                         Toast.makeText(
                             context,
@@ -285,6 +266,12 @@ fun Game() {
                         gameOver = true
                         newGame = true
                     }
+
+                    Toast.makeText(
+                        context,
+                        "AI is now playing as $opponent.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             )
         }
@@ -425,21 +412,31 @@ fun Game() {
     }
 }
 
-/* * /
+/* */
 @Preview(
-    showBackground = true
+    name = "Normal"
+    , showBackground = true
     , uiMode = Configuration.UI_MODE_NIGHT_NO
+    , device = Devices.PIXEL_3A
+    //, showSystemUi = true
 )
 // */
 /* */
 @Preview(
-    showBackground = true
+    name = "Dark"
+    , showBackground = true
     , uiMode = Configuration.UI_MODE_NIGHT_YES
+    , device = Devices.PIXEL_3A
+    , showSystemUi = true
 )
 // */
 @Composable
 fun PreviewGame() {
-    Game()
+    TicTacToeTheme {
+        Surface {
+            Game()
+        }
+    }
 }
 
 // Check whether any winning conditions have been met.
