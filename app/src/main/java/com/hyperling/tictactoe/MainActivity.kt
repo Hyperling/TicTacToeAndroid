@@ -46,34 +46,121 @@ fun Game() {
     val uriHandler = LocalUriHandler.current
     val activity = (LocalContext.current as? Activity)
 
+    // Preview does not handle toasts well, easily turn them off and on.
+    val toastsEnabled = true
+
+    /* State-aware variables. */
+
     // Shown on the screen.
+    var msg by remember { mutableStateOf("") }
+    var clearText by remember { mutableStateOf("") }
+
+    // Board pieces.
     val grid = remember { mutableStateListOf<String>() }
-    //var grid by remember { mutableStateOf(mutableListOf<String>()) }
+    if (grid.isEmpty()) {
+        for (i in 0..8) {
+            grid.add("")
+        }
+    }
     var turn by remember { mutableStateOf("X") }
     var lastTurn by remember { mutableStateOf("O") }
-    var msg by remember { mutableStateOf("") }
 
     // Hidden flags for determining where we're at.
     var status by remember{ mutableIntStateOf(0) }
-    var newGame by remember { mutableStateOf(true) }
     var gameOver by remember{ mutableStateOf(false) }
     var showClear by remember { mutableStateOf(true) }
-    var clearText by remember { mutableStateOf("") }
-    
-    // AI choices.
+
+    // Character pieces.
     var player by remember { mutableStateOf("X") }
     var opponent by remember { mutableStateOf("") }
-    var opponentHuman by remember { mutableStateOf(true) }
-    var opponentRandom by remember { mutableStateOf(false) }
-    var opponentHard by remember { mutableStateOf(false) }
-    var opponentEasy by remember { mutableStateOf(false) }
-    var opponentAnnoying by remember { mutableStateOf(false) }
 
     opponent = "O"
     if (player == "O") {
         opponent = "X"
     }
 
+    // AI choices.
+    var opponentHuman by remember { mutableStateOf(false) }
+    var opponentRandom by remember { mutableStateOf(true) }
+    var opponentHard by remember { mutableStateOf(false) }
+    var opponentEasy by remember { mutableStateOf(false) }
+    var opponentAnnoying by remember { mutableStateOf(false) }
+
+    // Being a goofball.
+    var mainText by remember { mutableStateOf("") }
+    var mainClicks by remember { mutableIntStateOf(0) }
+    // */
+
+
+    /* Helper functions to change global variables in bulk. */
+
+    // Check if the game has ended.
+    fun checkStatus(): Boolean {
+        if (status != 0) {
+            if (status == 1) {
+                msg = "Congratulations, $lastTurn won!"
+            } else if (status == 2) {
+                msg = "Tie, better luck next time!"
+            }
+            status = 0
+            showClear = true
+            gameOver = true
+            return true
+        }
+        return false
+    }
+
+    // Place a piece on the board, check for end game, and move to the next player's piece.
+    fun takeTurn(location: Int) {
+        lastTurn = turn
+
+        if (!gameOver) {
+            grid[location] = turn
+            status = checkGrid(grid)
+            checkStatus()
+            turn = changeTurn(turn)
+        }
+    }
+
+    // Set all the variables for starting the app near-fresh.
+    fun createGame() {
+        for (i in 0..8) {
+            grid[i] = ""
+        }
+        showClear = false
+        gameOver = false
+        turn = "X"
+        lastTurn = "O"
+    }
+
+    // Toggle whether the primary player goes first or second.
+    fun togglePlayer() {
+        when (player) {
+            "X" -> player = "O"
+            "O" -> player = "X"
+        }
+
+        if (!gameOver) {
+            createGame()
+            if (toastsEnabled) {
+                Toast.makeText(
+                    context,
+                    "Game has been cleared.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        if (toastsEnabled) {
+            Toast.makeText(
+                context,
+                "Opponent is now $opponent.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    // Sets all the radio buttons to false and returns true for the one being changed.
     fun setRadiosFalse(): Boolean {
         opponentHuman = false
         opponentRandom = false
@@ -82,40 +169,8 @@ fun Game() {
         opponentAnnoying = false
         return true
     }
+    // */
 
-    // Being a goofball.
-    var mainText by remember { mutableStateOf("") }
-    var mainClicks by remember { mutableIntStateOf(0) }
-
-    if (status != 0) {
-        if (status == 1) {
-            msg = "Congratulations, $lastTurn won!"
-        } else if (status == 2) {
-            msg = "Tie, better luck next time!"
-        }
-        status = 0
-        showClear = true
-        gameOver = true
-    }
-
-    if (lastTurn != turn && !gameOver) {
-        lastTurn = turn
-        msg = "Player $turn, your turn!"
-    }
-
-    if (newGame) {
-        grid.clear()
-        //grid = mutableListOf<String>()
-        for (i in 1..9) {
-            //grid.add("")
-            grid += ""
-        }
-        showClear = false
-        gameOver = false
-        newGame = false
-        turn = "X"
-        lastTurn = "O"
-    }
 
     /* AI logic. */
     if (turn == opponent) {
@@ -130,13 +185,13 @@ fun Game() {
             play = playWeightedMove(grid, 2, opponent)
         }
         if (!opponentHuman) {
-            grid[play] = opponent
-            status = checkGrid(grid)
-            turn = changeTurn(turn)
+            takeTurn(play)
         }
     }
     // */
 
+
+    // Main layout object.
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
         , verticalArrangement = Arrangement.Center
@@ -165,6 +220,7 @@ fun Game() {
                     opponentEasy = true
                     lastTurn = opponent
                     status = 1
+                    checkStatus()
                 }
 
                 else -> mainText = "We're done here, play!"
@@ -177,6 +233,10 @@ fun Game() {
                     mainClicks++
                 }
             )
+
+            if (lastTurn != turn && !gameOver) {
+                msg = "Player $turn, your turn!"
+            }
             Text(
                 text = msg,
                 textAlign = TextAlign.Center,
@@ -203,9 +263,7 @@ fun Game() {
                         Button(
                             onClick = {
                                 if (!gameOver && grid[index].isEmpty()) {
-                                    grid[index] = turn
-                                    status = checkGrid(grid)
-                                    turn = changeTurn(turn)
+                                    takeTurn(index)
                                 }
                             }, modifier = Modifier
                                 .size(69.dp)
@@ -230,7 +288,7 @@ fun Game() {
             clearText = "Start New Game"
         }
         Row {
-            FilledTonalButton(onClick = { newGame = true }) {
+            FilledTonalButton(onClick = { createGame() }) {
                 Text(
                     text = clearText, fontSize = 16.sp
                 )
@@ -244,33 +302,14 @@ fun Game() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Primary user playing as '$player'.",
+                text = "Primary user playing as $player.",
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.size(5.dp))
             Switch(
                 checked = (player == "X"),
                 onCheckedChange = {
-                    when (player) {
-                        "X" -> player = "O"
-                        "O" -> player = "X"
-                    }
-
-                    if (!gameOver) {
-                        Toast.makeText(
-                            context,
-                            "Game has been cleared.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        gameOver = true
-                        newGame = true
-                    }
-
-                    Toast.makeText(
-                        context,
-                        "AI is now playing as $opponent.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    togglePlayer()
                 }
             )
         }
@@ -509,9 +548,9 @@ private fun changeTurn(turn: String): String {
 private fun playRandomMove(grid: MutableList<String>): Int {
     var choice: Int
     do {
-        choice = (0..9).random()
+        choice = (0..8).random()
     }
-    while (grid[choice].isNotBlank() && choice > 0)
+    while (grid[choice].isNotEmpty())
     return choice
 }
 
