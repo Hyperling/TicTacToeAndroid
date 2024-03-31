@@ -4,9 +4,10 @@
     <string name="opponent_header">Choose your opponent:</string>
     <string name="opponent_human">Human - Someone next to you.</string>
     <string name="opponent_random">AI : Random - Fills any open spot.</string>
-    <string name="opponent_hard">AI : Hard - Tries to win.</string>
-    <string name="opponent_easy">AI : Easy - Tries to make you win.</string>
-    <string name="opponent_annoying">AI : Stubborn - Tries to tie.</string>
+    <string name="opponent_hard">AI : Hard - Your typical try-hard.</string>
+    <string name="opponent_easy">AI : Easy - Opportunist, may try to win.</string>
+    <string name="opponent_annoying">AI : Stubborn - Won\'t let you win.</string>
+    <string name="opponent_shy">AI : Shy - Too scared to win.</string>
 
     <string name="link1_text">Website</string>
     <string name="link1_uri">https://hyperling.com</string>
