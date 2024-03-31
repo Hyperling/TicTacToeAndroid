@@ -1,5 +1,6 @@
 package com.hyperling.tictactoe
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
@@ -21,6 +22,7 @@ import com.hyperling.tictactoe.ui.theme.TicTacToeTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Game() {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val activity = (LocalContext.current as? Activity)
 
     // Shown on the screen.
     val grid = remember { mutableStateListOf<String>() }
@@ -373,8 +377,11 @@ fun Game() {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val website = stringResource(id = R.string.uri_website)
                 OutlinedButton(
-                    onClick = { /* TBD */ },
+                    onClick = {
+                        uriHandler.openUri(website)
+                    },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
@@ -383,9 +390,11 @@ fun Game() {
                         text = "Website"
                     )
                 }
+
                 Spacer(modifier = Modifier.weight(0.05f))
+
                 IconButton(
-                    onClick = { /* TBD */ },
+                    onClick = { activity?.finish() },
                     modifier = Modifier.weight(0.1f)
                 ) {
                     Icon(
@@ -394,15 +403,20 @@ fun Game() {
                         , modifier = Modifier.size(18.dp)
                     )
                 }
+
                 Spacer(modifier = Modifier.weight(0.05f))
+
+                val github = stringResource(id = R.string.uri_github)
                 OutlinedButton(
-                    onClick = { /* TBD */ },
+                    onClick = {
+                        uriHandler.openUri(github)
+                    },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(0.4f)
                 ) {
                     Text(
-                        text = "Email"
+                        text = "GitHub"
                     )
                 }
             }

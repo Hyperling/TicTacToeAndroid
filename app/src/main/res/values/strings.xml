@@ -7,4 +7,7 @@
     <string name="opponent_hard">AI : Hard, tries to win.</string>
     <string name="opponent_easy">AI : Easy, tries to make you win.</string>
     <string name="opponent_annoying">AI : Stubborn, tries to tie.</string>
+
+    <string name="uri_website">https://Hyperling.com</string>
+    <string name="uri_github">https://github.com/Hyperling/TicTacToeAndroid</string>
 </resources>
