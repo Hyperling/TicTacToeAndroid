@@ -156,6 +156,24 @@ fun Game(context: Context) {
         lastTurn = "O"
     }
 
+    /* AI logic. * /
+    if (turn == opponent) {
+        var play = -1
+        if (opponentRandom) {
+            play = playRandomMove(grid)
+        } else if (opponentHard) {
+            play = playWeightedMove(grid, 1, opponent)
+        } else if (opponentEasy) {
+            play = playWeightedMove(grid, 0, opponent)
+        } else if (opponentAnnoying) {
+            play = playWeightedMove(grid, 2, opponent)
+        }
+        if (!opponentHuman) {
+            grid[play] = opponent
+        }
+    }
+    // */
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
         , verticalArrangement = Arrangement.Center
@@ -166,11 +184,12 @@ fun Game(context: Context) {
 
         Spacer(modifier = Modifier.weight(0.1f))
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-            , verticalArrangement = Arrangement.Center
-        ) {
-            when(mainClicks){
+        /* Header text. */
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            when (mainClicks) {
                 0 -> mainText = "Let's play Tic-Tac-Toe!"
                 1 -> mainText = "Ouch! Why'd you hit me!?"
                 2 -> mainText = "Hey! Stop that!"
@@ -185,6 +204,7 @@ fun Game(context: Context) {
                     lastTurn = opponent
                     status = 1
                 }
+
                 else -> mainText = "We're done here, play!"
             }
             Text(
@@ -202,7 +222,15 @@ fun Game(context: Context) {
                 modifier = Modifier
                     .padding(10.dp)
             )
-            Spacer(modifier = Modifier.size(10.dp))
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        // */
+
+        /* The Grid */
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
             // OK, this is awesome, thanks Jetbrains Compose.
             var count = 0
@@ -231,9 +259,11 @@ fun Game(context: Context) {
                 }
             }
         }
-
         Spacer(modifier = Modifier.weight(0.05f))
+        // */
 
+
+        /* Clear, restart, start new game button. */
         if (showClear) {
             clearText = "Start New Game"
         } else {
@@ -246,13 +276,13 @@ fun Game(context: Context) {
                 )
             }
         }
-
         Spacer(modifier = Modifier.weight(0.05f))
+        // */
 
-        // Allow player to go 2nd (play as O)
-        Row (
+        /* Allow player to go 2nd (play as O) */
+        Row(
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(
                 text = "Primary user playing as '$player'.",
                 fontSize = 16.sp
@@ -280,11 +310,10 @@ fun Game(context: Context) {
                 }
             )
         }
-
         Spacer(modifier = Modifier.weight(0.05f))
+        // */
 
-        // Radio list for opponent difficulty.
-        /* */
+        /* Opponent difficulty radio buttons. */
         Column (
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Bottom
@@ -492,7 +521,7 @@ private fun changeTurn(turn: String): String {
 private fun playRandomMove(grid: MutableList<String>): Int {
     var random = Random(9)
     var choice = random.nextInt()
-    while (grid[choice].isNotBlank()) {
+    while (grid[choice].isNotBlank() && choice < 9) {
         choice = random.nextInt()
     }
     return choice
