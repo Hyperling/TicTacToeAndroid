@@ -1,10 +1,15 @@
 package com.hyperling.tictactoe
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +17,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,9 +47,12 @@ import com.hyperling.tictactoe.ui.theme.TicTacToeTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 //Surface( modifier = Modifier.fillMaxSize()
                 //    , color = MaterialTheme.colorScheme.background
                 //) {
-                    Game()
+                    Game(this)
                 //}
             }
         }
@@ -61,20 +82,49 @@ class MainActivity : ComponentActivity() {
 // https://tigeroakes.com/posts/mutablestateof-list-vs-mutablestatelistof/
 
 @Composable
-fun Game() {
+fun Game(context: Context) {
 
     // Shown on the screen.
-    //val grid = remember { mutableStateListOf<String>() }
-    var grid by remember { mutableStateOf(mutableListOf<String>()) }
+    val grid = remember { mutableStateListOf<String>() }
+    //var grid by remember { mutableStateOf(mutableListOf<String>()) }
     var turn by remember { mutableStateOf("X") }
     var lastTurn by remember { mutableStateOf("O") }
     var msg by remember { mutableStateOf("") }
 
     // Hidden flags for determining where we're at.
     var status by remember{ mutableIntStateOf(0) }
+    var newGame by remember { mutableStateOf(true) }
     var gameOver by remember{ mutableStateOf(false) }
     var showClear by remember { mutableStateOf(true) }
-    var newGame by remember { mutableStateOf(true) }
+    var clearText by remember { mutableStateOf("") }
+    
+    // AI choices.
+    var player by remember { mutableStateOf("X") }
+    var opponent by remember { mutableStateOf("") }
+    var opponentHuman by remember { mutableStateOf(true) }
+    var opponentRandom by remember { mutableStateOf(false) }
+    var opponentHard by remember { mutableStateOf(false) }
+    var opponentEasy by remember { mutableStateOf(false) }
+    var opponentAnnoying by remember { mutableStateOf(false) }
+
+    if (player == "X") {
+        opponent = "O"
+    } else {
+        opponent = "X"
+    }
+
+    fun setRadiosFalse(): Boolean {
+        opponentHuman = false
+        opponentRandom = false
+        opponentHard = false
+        opponentEasy = false
+        opponentAnnoying = false
+        return true
+    }
+
+    // Being a goofball.
+    var mainText by remember { mutableStateOf("") }
+    var mainClicks by remember { mutableIntStateOf(0) }
 
     if (status != 0) {
         if (status == 1) {
@@ -82,8 +132,6 @@ fun Game() {
         } else if (status == 2) {
             msg = "Tie, better luck next time!"
         }
-        turn = "X"
-        lastTurn = "O"
         status = 0
         showClear = true
         gameOver = true
@@ -95,8 +143,8 @@ fun Game() {
     }
 
     if (newGame) {
-        //grid.clear()
-        grid = mutableListOf<String>()
+        grid.clear()
+        //grid = mutableListOf<String>()
         for (i in 1..9) {
             //grid.add("")
             grid += ""
@@ -104,229 +152,260 @@ fun Game() {
         showClear = false
         gameOver = false
         newGame = false
+        turn = "X"
+        lastTurn = "O"
     }
 
-    // https://developer.android.com/develop/ui/compose/layouts/constraintlayout
-    // Need to switch to a Constraint layout to prevent the
-    //   Play New Game button from screwing everything up.
-    /* * /
-    ConstraintLayout (
-        contentAlignment = Alignment.Center
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+        , verticalArrangement = Arrangement.Center
         , modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(Color.DarkGray)
     ) {
-    // */
+
+        Spacer(modifier = Modifier.weight(0.1f))
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
             , verticalArrangement = Arrangement.Center
-            , modifier = Modifier
-                .fillMaxSize()
-                .background(Color.DarkGray)
         ) {
-
+            when(mainClicks){
+                0 -> mainText = "Let's play Tic-Tac-Toe!"
+                1 -> mainText = "Ouch! Why'd you hit me!?"
+                2 -> mainText = "Hey! Stop that!"
+                3 -> mainText = "Alright wise guy..."
+                4 -> mainText = "Play the game!"
+                5 -> mainText = "I'm done with you!"
+                6 -> mainText = "Last chance, jerk!!"
+                100 -> mainText = "You're determined, fella."
+                7 -> {
+                    mainText = "OK, take this!"
+                    opponentEasy = true
+                    lastTurn = opponent
+                    status = 1
+                }
+                else -> mainText = "We're done here, play!"
+            }
             Text(
-                text = "Let's play Tic-Tac-Toe!"
-                , textAlign = TextAlign.Center
-                , fontSize = 32.sp
+                text = mainText,
+                textAlign = TextAlign.Center,
+                fontSize = 32.sp,
+                modifier = Modifier.clickable {
+                    mainClicks++
+                }
             )
             Text(
-                text = msg
-                , textAlign = TextAlign.Center
-                , fontSize = 32.sp
-                , modifier = Modifier
+                text = msg,
+                textAlign = TextAlign.Center,
+                fontSize = 32.sp,
+                modifier = Modifier
                     .padding(10.dp)
             )
-            Column(
-                //modifier = Modifier
-                //    .background(Color.Black, RectangleShape)
-            ) {
-                Row {
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[0].isEmpty()) {
-                                //grid[0] = turn
-                                grid[0] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[0]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[1].isEmpty()) {
-                                grid[1] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[1]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[2].isEmpty()) {
-                                grid[2] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[2]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                }
-                Row {
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[3].isEmpty()) {
-                                grid[3] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[3]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[4].isEmpty()) {
-                                grid[4] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[4]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[5].isEmpty()) {
-                                grid[5] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[5]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                }
-                Row {
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[6].isEmpty()) {
-                                grid[6] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[6]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[7].isEmpty()) {
-                                grid[7] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }
-                        , modifier = Modifier
-                            .size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[7]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            if (!gameOver && grid[8].isEmpty()) {
-                                grid[8] = turn
-                                status = checkGrid(grid)
-                                turn = changeTurn(turn)
-                            }
-                        }, modifier = Modifier.size(69.dp)
-                    ) {
-                        Text(
-                            text = grid[8]
-                            , fontSize = 24.sp
-                            , textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-            // TBD how to make this appear without moving all the
-            //   other items up then back down when it leaves?
-            if (showClear) {
-                Spacer(modifier = Modifier.size(8.dp))
-                Row {
-                    Button(onClick = { newGame = true }) {
-                        Text(
-                            text = "Start New Game"
-                            , fontSize = 18.sp
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.size(10.dp))
 
-            // Radio list for opponent difficulty.
-            /* * /
-            Column {
-                RadioGroup (
-                    RadioButton(selected = true, onClick = { /* NOTHING */ })
-                )
-
+            // OK, this is awesome, thanks Jetbrains Compose.
+            var count = 0
+            for (row in 1..3) {
+                Row {
+                    for (col in 1..3) {
+                        val index = count
+                        Button(
+                            onClick = {
+                                if (!gameOver && grid[index].isEmpty()) {
+                                    grid[index] = turn
+                                    status = checkGrid(grid)
+                                    turn = changeTurn(turn)
+                                }
+                            }, modifier = Modifier
+                                .size(69.dp)
+                        ) {
+                            Text(
+                                text = grid[index],
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        count++
+                    }
+                }
             }
-            // */
         }
-    /* * /
+
+        Spacer(modifier = Modifier.weight(0.05f))
+
+        if (showClear) {
+            clearText = "Start New Game"
+        } else {
+            clearText = "Restart"
+        }
+        Row {
+            FilledTonalButton(onClick = { newGame = true }) {
+                Text(
+                    text = clearText, fontSize = 18.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(0.05f))
+
+        // Allow player to go 2nd (play as O)
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(
+                text = "Primary user playing as '$player'.",
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+            Switch(
+                checked = (player == "X"),
+                onCheckedChange = {
+                    when (player) {
+                        "X" -> player = "O"
+                        "O" -> player = "X"
+                    }
+                    Toast.makeText(
+                        context,
+                        "AI is now playing as $opponent.",
+                        Toast.LENGTH_SHORT
+                    )
+                    Toast.makeText(
+                        context,
+                        "Game has been cleared.",
+                        Toast.LENGTH_LONG
+                    )
+                    gameOver = true
+                    newGame = true
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(0.05f))
+
+        // Radio list for opponent difficulty.
+        /* */
+        Column (
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Bottom
+        ){
+            Text(
+                text = stringResource(id = R.string.opponent_header),
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    opponentHuman = setRadiosFalse()
+                }
+            ){
+                RadioButton(
+                    selected = opponentHuman,
+                    onClick = { opponentHuman = setRadiosFalse() },
+                )
+                Text(
+                    text = stringResource(id = R.string.opponent_human),
+                    fontSize = 16.sp
+                )
+            }
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                RadioButton(
+                    selected = opponentRandom,
+                    onClick = { opponentRandom = setRadiosFalse() },
+                )
+                Text(
+                    text = stringResource(id = R.string.opponent_random),
+                    fontSize = 16.sp
+                )
+            }
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                RadioButton(
+                    selected = opponentHard,
+                    onClick = { opponentHard = setRadiosFalse() },
+                )
+                Text(
+                    text = stringResource(id = R.string.opponent_hard),
+                    fontSize = 16.sp
+                )
+            }
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                RadioButton(
+                    selected = opponentEasy,
+                    onClick = { opponentEasy = setRadiosFalse() },
+                )
+                Text(
+                    text = stringResource(id = R.string.opponent_easy),
+                    fontSize = 16.sp
+                )
+            }
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                RadioButton(
+                    selected = opponentAnnoying,
+                    onClick = { opponentAnnoying = setRadiosFalse() },
+                )
+                Text(
+                    text = stringResource(id = R.string.opponent_annoying),
+                    fontSize = 16.sp
+                )
+            }
+        }
+        // */
+
+        Spacer(modifier = Modifier.weight(.05f))
+
+        // Media Links TBD
+        Column(
+            verticalArrangement = Arrangement.Bottom
+        ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .weight(0.4f)
+                ) {
+                    Text(
+                        text = "Website"
+                    )
+                }
+                Spacer(modifier = Modifier.weight(0.05f))
+                IconButton(
+                    onClick = { /* TBD */ },
+                    modifier = Modifier.weight(0.1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Close
+                        , contentDescription = "Exit"
+                        , modifier = Modifier.size(18.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(0.05f))
+                OutlinedButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .weight(0.4f)
+                ) {
+                    Text(
+                        text = "Email"
+                    )
+                }
+            }
+
+        }
     }
-    // */
 }
 
 /* * /
@@ -343,7 +422,7 @@ fun Game() {
 // */
 @Composable
 fun PreviewGame() {
-    Game()
+    Game(LocalContext.current)
 }
 
 // Check whether any winning conditions have been met.
@@ -351,7 +430,7 @@ fun PreviewGame() {
 //   0: False, no victor yet.
 //   1: Victory!
 //   2: Game ended in a tie.
-fun checkGrid(grid: List<String>): Int {
+private fun checkGrid(grid: List<String>): Int {
 
     // Left column
     if (grid[0].isNotBlank() && grid[0] === grid[3] && grid[3] === grid[6]) {
@@ -402,7 +481,7 @@ fun checkGrid(grid: List<String>): Int {
 }
 
 // Change which player's turn it is.
-fun changeTurn(turn: String): String {
+private fun changeTurn(turn: String): String {
     if (turn == "X") {
         return "O"
     }
@@ -410,14 +489,21 @@ fun changeTurn(turn: String): String {
 }
 
 /* AI Players */
-fun playRandomMove(grid: MutableList<String>) : Int {
+private fun playRandomMove(grid: MutableList<String>): Int {
+    var random = Random(9)
+    var choice = random.nextInt()
+    while (grid[choice].isNotBlank()) {
+        choice = random.nextInt()
+    }
+    return choice
+}
+
+// behavior determines if the AI is:
+//   0 - Plays to lose
+//   1 - Plays to win
+//   2 - Plays to tie
+// Returns the grid number which should get the AI's mark.
+fun playWeightedMove(grid: MutableList<String>, behavior: Int, turn: String) : Int {
     return -1
 }
 
-fun playWinningMove(grid: MutableList<String>) : Int {
-    return -1
-}
-
-fun playAnnoyingMove(grid: MutableList<String>) : Int {
-    return -1
-}
