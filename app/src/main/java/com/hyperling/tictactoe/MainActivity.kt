@@ -72,12 +72,7 @@ fun Game() {
 
     // Character pieces.
     var player by remember { mutableStateOf("X") }
-    var opponent by remember { mutableStateOf("") }
-
-    opponent = "O"
-    if (player == "O") {
-        opponent = "X"
-    }
+    var opponent by remember { mutableStateOf("O") }
 
     // AI choices.
     var opponentHuman by remember { mutableStateOf(false) }
@@ -136,8 +131,8 @@ fun Game() {
     // Toggle whether the primary player goes first or second.
     fun togglePlayer() {
         when (player) {
-            "X" -> player = "O"
-            "O" -> player = "X"
+            "X" -> { player = "O"; opponent = "X" }
+            "O" -> { player = "X"; opponent = "O" }
         }
 
         if (!gameOver) {
@@ -199,7 +194,7 @@ fun Game() {
             .fillMaxSize()
     ) {
 
-        Spacer(modifier = Modifier.weight(0.2f))
+        Spacer(modifier = Modifier.weight(0.1f))
 
         /* Header text. */
         Column (
