@@ -294,7 +294,8 @@ fun Game() {
 
         /* Allow player to go 2nd (play as O) */
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable { togglePlayer() }
         ) {
             Text(
                 text = "Primary user playing as $player.",
@@ -303,9 +304,7 @@ fun Game() {
             Spacer(modifier = Modifier.size(5.dp))
             Switch(
                 checked = (player == "X"),
-                onCheckedChange = {
-                    togglePlayer()
-                }
+                onCheckedChange = { togglePlayer() }
             )
         }
         Spacer(modifier = Modifier.weight(0.05f))
