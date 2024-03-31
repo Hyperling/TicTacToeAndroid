@@ -2,14 +2,14 @@
     <string name="app_name">Tic-Tac-Toe</string>
 
     <string name="opponent_header">Choose your opponent:</string>
-    <string name="opponent_human">Friend, someone next to you.</string>
-    <string name="opponent_random">AI : Random, fills any open spot.</string>
-    <string name="opponent_hard">AI : Hard, tries to win.</string>
-    <string name="opponent_easy">AI : Easy, tries to make you win.</string>
-    <string name="opponent_annoying">AI : Stubborn, tries to tie.</string>
+    <string name="opponent_human">Human - Someone next to you.</string>
+    <string name="opponent_random">AI : Random - Fills any open spot.</string>
+    <string name="opponent_hard">AI : Hard - Tries to win.</string>
+    <string name="opponent_easy">AI : Easy - Tries to make you win.</string>
+    <string name="opponent_annoying">AI : Stubborn - Tries to tie.</string>
 
     <string name="link1_text">Website</string>
-    <string name="link1_uri">https://Hyperling.com</string>
+    <string name="link1_uri">https://hyperling.com</string>
     <string name="link2_text">GitHub</string>
     <string name="link2_uri">https://github.com/Hyperling/TicTacToeAndroid</string>
 </resources>

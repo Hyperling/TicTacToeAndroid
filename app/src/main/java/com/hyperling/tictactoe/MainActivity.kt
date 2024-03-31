@@ -337,7 +337,10 @@ fun Game() {
                 )
             }
             Row (
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    opponentRandom = setRadiosFalse()
+                }
             ){
                 RadioButton(
                     selected = opponentRandom,
@@ -349,7 +352,10 @@ fun Game() {
                 )
             }
             Row (
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    opponentHard = setRadiosFalse()
+                }
             ){
                 RadioButton(
                     selected = opponentHard,
@@ -361,7 +367,10 @@ fun Game() {
                 )
             }
             Row (
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    opponentEasy = setRadiosFalse()
+                }
             ){
                 RadioButton(
                     selected = opponentEasy,
@@ -373,7 +382,10 @@ fun Game() {
                 )
             }
             Row (
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    opponentAnnoying = setRadiosFalse()
+                }
             ){
                 RadioButton(
                     selected = opponentAnnoying,
@@ -409,7 +421,7 @@ fun Game() {
                 ) {
                     Text(
                         text = text1,
-                        fontSize = 12.sp
+                        fontSize = 14.sp
                     )
                 }
 
@@ -440,7 +452,7 @@ fun Game() {
                 ) {
                     Text(
                         text = text2,
-                        fontSize = 12.sp
+                        fontSize = 14.sp
                     )
                 }
             }
