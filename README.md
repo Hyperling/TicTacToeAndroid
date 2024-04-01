@@ -10,7 +10,7 @@ and maybe even make the game mad. 🐇🥚
 
 App is hosted at [Hyperling.com](https://hyperling.com/home/#tictactoe) where
 it is also available for
-[Direct Download](https://hyperling.com/files/apks/tictactoe.apk).
+[Direct Download](https://hyperling.com/files/apks/TicTacToe.apk).
 
 ## TODO
 
