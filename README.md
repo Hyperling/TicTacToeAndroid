@@ -2,7 +2,7 @@
 
 Simple tic-tac-toe game written for practicing Android/Kotlin/Compose.
 
-Allows player to choose whether they'd like to go first (X) or second (O),
+Allows player to choose whether they'd like to go first `X` or second `O`,
 play with a friend or against a choice of algorithms,
 and maybe even make the game mad. 🐇🥚
 
