@@ -3,6 +3,7 @@ package com.hyperling.tictactoe
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -614,6 +615,10 @@ private fun playRandomMove(grid: MutableList<String>): Int {
 //   * - Random, every open spot has the same weight.
 // Returns the grid number which should get the AI's mark.
 fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : Int {
+    val t = "playWeightedMove"
+    val d = false
+
+    // Determine who's who.
     val human: String = ( if (piece == "X") "O" else "X" )
 
     // Custom weights depending on the AI's desire.
@@ -642,7 +647,7 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
         }
         // Annoying / stubborn, will not let you win but also will not try to win.
         2 -> {
-            causeWin = -1
+            causeWin = 99
             preventLoss = 100
             middle = 4
             corner = 3
@@ -813,12 +818,16 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
     // Go through the weights, and put the indexes of the highest in a new array.
     var highestIndexes: IntArray = intArrayOf()
     var heaviest = played + 1
+    if (d) Log.d(t, "*** Starting New Calculation ***")
     for ((count, weight) in weights.withIndex()) {
+        if (d) Log.d(t, "count=$count, weight=$weight, heaviest=$heaviest")
         if (weight > heaviest) {
             heaviest = weight
             highestIndexes = intArrayOf(count)
+            if (d) Log.d(t, "highestIndexes reset. " + highestIndexes.count().toString())
         } else if (weight == heaviest) {
             highestIndexes += count
+            if (d) Log.d(t, "highestIndexes appended. " + highestIndexes.count().toString())
         }
     }
 
