@@ -34,4 +34,4 @@ google-services.json
 /app/debug/output-metadata.json
 
 # Ha!
-keystore
+keystore/*
