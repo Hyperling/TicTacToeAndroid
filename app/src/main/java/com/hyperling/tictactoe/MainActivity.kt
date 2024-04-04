@@ -649,10 +649,10 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
         // Easy, does not prevent human from winning and may try to win.
         0 -> {
             causeWin = 100
-            preventLoss = -1
-            middle = 1
-            corner = 1
-            side = 1
+            preventLoss = -25
+            middle = 0
+            corner = 0
+            side = 0
         }
         // Hard, will try to win for itself and prevent the  human from winning.
         1 -> {
@@ -664,7 +664,7 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
         }
         // Annoying / stubborn, will not let you win but also will not try to win.
         2 -> {
-            causeWin = 99
+            causeWin = -25
             preventLoss = 100
             middle = 4
             corner = 3
@@ -672,11 +672,11 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
         }
         // Shy, refuses to complete the game unless it's the only move left.
         3 -> {
-            causeWin = -1
-            preventLoss = -1
-            middle = 1
-            corner = 1
-            side = 1
+            causeWin = -25
+            preventLoss = -25
+            middle = 4
+            corner = 3
+            side = 2
         }
         // Random! No need for the other function anymore. ;)
         else -> {
@@ -697,132 +697,131 @@ fun playWeightedMove(grid: MutableList<String>, behavior: Int, piece: String) : 
 
     // Top Row, Win Conditions
     if (grid[0] == piece  && grid[1] == piece  && grid[2].isBlank())
-        weights[2] = causeWin
+        weights[2] += causeWin
     if (grid[0] == piece  && grid[1].isBlank() && grid[2] == piece)
-        weights[1] = causeWin
+        weights[1] += causeWin
     if (grid[0].isBlank() && grid[1] == piece  && grid[2] == piece)
-        weights[0] = causeWin
+        weights[0] += causeWin
 
     // Top Row, Lose Conditions
     if (grid[0] == human  && grid[1] == human  && grid[2].isBlank())
-        weights[2] = preventLoss
+        weights[2] += preventLoss
     if (grid[0] == human  && grid[1].isBlank() && grid[2] == human)
-        weights[1] = preventLoss
+        weights[1] += preventLoss
     if (grid[0].isBlank() && grid[1] == human  && grid[2] == human)
-        weights[0] = preventLoss
+        weights[0] += preventLoss
 
     // Middle Row, Win Conditions
     if (grid[3] == piece  && grid[4] == piece  && grid[5].isBlank())
-        weights[5] = causeWin
+        weights[5] += causeWin
     if (grid[3] == piece  && grid[4].isBlank() && grid[5] == piece)
-        weights[4] = causeWin
+        weights[4] += causeWin
     if (grid[3].isBlank() && grid[4] == piece  && grid[5] == piece)
-        weights[3] = causeWin
+        weights[3] += causeWin
 
     // Middle Row, Lose Conditions
     if (grid[3] == human  && grid[4] == human  && grid[5].isBlank())
-        weights[5] = preventLoss
+        weights[5] += preventLoss
     if (grid[3] == human  && grid[4].isBlank() && grid[5] == human)
-        weights[4] = preventLoss
+        weights[4] += preventLoss
     if (grid[3].isBlank() && grid[4] == human  && grid[5] == human)
-        weights[3] = preventLoss
+        weights[3] += preventLoss
 
     // Bottom Row, Win Conditions
     if (grid[6] == piece  && grid[7] == piece  && grid[8].isBlank())
-        weights[8] = causeWin
+        weights[8] += causeWin
     if (grid[6] == piece  && grid[7].isBlank() && grid[8] == piece)
-        weights[7] = causeWin
+        weights[7] += causeWin
     if (grid[6].isBlank() && grid[7] == piece  && grid[8] == piece)
-        weights[6] = causeWin
+        weights[6] += causeWin
 
     // Bottom Row, Lose Conditions
     if (grid[6] == human  && grid[7] == human  && grid[8].isBlank())
-        weights[8] = preventLoss
+        weights[8] += preventLoss
     if (grid[6] == human  && grid[7].isBlank() && grid[8] == human)
-        weights[7] = preventLoss
+        weights[7] += preventLoss
     if (grid[6].isBlank() && grid[7] == human  && grid[8] == human)
-        weights[6] = preventLoss
+        weights[6] += preventLoss
 
     // Left Column, Win Conditions
     if (grid[0] == piece  && grid[3] == piece  && grid[6].isBlank())
-        weights[6] = causeWin
+        weights[6] += causeWin
     if (grid[0] == piece  && grid[3].isBlank() && grid[6] == piece)
-        weights[3] = causeWin
+        weights[3] += causeWin
     if (grid[0].isBlank() && grid[3] == piece  && grid[6] == piece)
-        weights[0] = causeWin
+        weights[0] += causeWin
 
     // Left Column, Lose Conditions
     if (grid[0] == human  && grid[3] == human  && grid[6].isBlank())
-        weights[6] = preventLoss
+        weights[6] += preventLoss
     if (grid[0] == human  && grid[3].isBlank() && grid[6] == human)
-        weights[3] = preventLoss
+        weights[3] += preventLoss
     if (grid[0].isBlank() && grid[3] == human  && grid[6] == human)
-        weights[0] = preventLoss
+        weights[0] += preventLoss
 
     // Middle Column, Win Conditions
     if (grid[1] == piece  && grid[4] == piece  && grid[7].isBlank())
-        weights[7] = causeWin
+        weights[7] += causeWin
     if (grid[1] == piece  && grid[4].isBlank() && grid[7] == piece)
-        weights[4] = causeWin
+        weights[4] += causeWin
     if (grid[1].isBlank() && grid[4] == piece  && grid[7] == piece)
-        weights[1] = causeWin
+        weights[1] += causeWin
 
     // Middle Column, Lose Conditions
     if (grid[1] == human  && grid[4] == human  && grid[7].isBlank())
-        weights[7] = preventLoss
+        weights[7] += preventLoss
     if (grid[1] == human  && grid[4].isBlank() && grid[7] == human)
-        weights[4] = preventLoss
+        weights[4] += preventLoss
     if (grid[1].isBlank() && grid[4] == human  && grid[7] == human)
-        weights[1] = preventLoss
+        weights[1] += preventLoss
 
     // Right Column, Win Conditions
     if (grid[2] == piece  && grid[5] == piece  && grid[8].isBlank())
-        weights[8] = causeWin
+        weights[8] += causeWin
     if (grid[2] == piece  && grid[5].isBlank() && grid[8] == piece)
-        weights[5] = causeWin
+        weights[5] += causeWin
     if (grid[2].isBlank() && grid[5] == piece  && grid[8] == piece)
-        weights[2] = causeWin
+        weights[2] += causeWin
 
     // Right Column, Lose Conditions
     if (grid[2] == human  && grid[5] == human  && grid[8].isBlank())
-        weights[8] = preventLoss
+        weights[8] += preventLoss
     if (grid[2] == human  && grid[5].isBlank() && grid[8] == human)
-        weights[5] = preventLoss
+        weights[5] += preventLoss
     if (grid[2].isBlank() && grid[5] == human  && grid[8] == human)
-        weights[2] = preventLoss
+        weights[2] += preventLoss
 
     // Top Left Diagonal, Win Conditions
     if (grid[0] == piece  && grid[4] == piece  && grid[8].isBlank())
-        weights[8] = causeWin
+        weights[8] += causeWin
     if (grid[0] == piece  && grid[4].isBlank() && grid[8] == piece)
-        weights[4] = causeWin
+        weights[4] += causeWin
     if (grid[0].isBlank() && grid[4] == piece  && grid[8] == piece)
-        weights[0] = causeWin
+        weights[0] += causeWin
 
     // Top Left Diagonal, Lose Conditions
     if (grid[0] == human  && grid[4] == human  && grid[8].isBlank())
-        weights[8] = preventLoss
+        weights[8] += preventLoss
     if (grid[0] == human  && grid[4].isBlank() && grid[8] == human)
-        weights[4] = preventLoss
+        weights[4] += preventLoss
     if (grid[0].isBlank() && grid[4] == human  && grid[8] == human)
-        weights[0] = preventLoss
+        weights[0] += preventLoss
 
     // Top Right Diagonal, Win Conditions
     if (grid[2] == piece  && grid[4] == piece  && grid[6].isBlank())
-        weights[6] = causeWin
+        weights[6] += causeWin
     if (grid[2] == piece  && grid[4].isBlank() && grid[6] == piece)
-        weights[4] = causeWin
+        weights[4] += causeWin
     if (grid[2].isBlank() && grid[4] == piece  && grid[6] == piece)
-        weights[2] = causeWin
+        weights[2] += causeWin
 
     // Top Right Diagonal, Lose Conditions
     if (grid[2] == human  && grid[4] == human  && grid[6].isBlank())
-        weights[6] = preventLoss
+        weights[6] += preventLoss
     if (grid[2] == human  && grid[4].isBlank() && grid[6] == human)
-        weights[4] = preventLoss
+        weights[4] += preventLoss
     if (grid[2].isBlank() && grid[4] == human  && grid[6] == human)
-        weights[2] = preventLoss
-
+        weights[2] += preventLoss
     // */
 
     // Set all the played pieces to a very low number.
