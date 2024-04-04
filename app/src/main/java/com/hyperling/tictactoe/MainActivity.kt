@@ -194,8 +194,8 @@ fun Game() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
         , verticalArrangement = Arrangement.Center
-        , modifier = Modifier
-            .fillMaxSize()
+        //, modifier = Modifier
+        //    .fillMaxSize()
     ) {
 
         Spacer(modifier = Modifier.weight(0.1f))
@@ -346,95 +346,112 @@ fun Game() {
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.size(5.dp))
-            Row (
+
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentHuman = setRadiosFalse()
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column (
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentHuman = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentHuman,
+                            onClick = { opponentHuman = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_human),
+                            fontSize = 16.sp
+                        )
+                    }
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentHard = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentHard,
+                            onClick = { opponentHard = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_hard),
+                            fontSize = 16.sp
+                        )
+                    }
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentAnnoying = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentAnnoying,
+                            onClick = { opponentAnnoying = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_annoying),
+                            fontSize = 16.sp
+                        )
+                    }
                 }
-            ){
-                RadioButton(
-                    selected = opponentHuman,
-                    onClick = { opponentHuman = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_human),
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentRandom = setRadiosFalse()
+
+                Column (
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentRandom = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentRandom,
+                            onClick = { opponentRandom = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_random),
+                            fontSize = 16.sp
+                        )
+                    }
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentEasy = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentEasy,
+                            onClick = { opponentEasy = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_easy),
+                            fontSize = 16.sp
+                        )
+                    }
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            opponentShy = setRadiosFalse()
+                        }
+                    ){
+                        RadioButton(
+                            selected = opponentShy,
+                            onClick = { opponentShy = setRadiosFalse() },
+                        )
+                        Text(
+                            text = stringResource(id = R.string.opponent_shy),
+                            fontSize = 16.sp
+                        )
+                    }
                 }
-            ){
-                RadioButton(
-                    selected = opponentRandom,
-                    onClick = { opponentRandom = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_random),
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentHard = setRadiosFalse()
-                }
-            ){
-                RadioButton(
-                    selected = opponentHard,
-                    onClick = { opponentHard = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_hard),
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentEasy = setRadiosFalse()
-                }
-            ){
-                RadioButton(
-                    selected = opponentEasy,
-                    onClick = { opponentEasy = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_easy),
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentAnnoying = setRadiosFalse()
-                }
-            ){
-                RadioButton(
-                    selected = opponentAnnoying,
-                    onClick = { opponentAnnoying = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_annoying),
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    opponentShy = setRadiosFalse()
-                }
-            ){
-                RadioButton(
-                    selected = opponentShy,
-                    onClick = { opponentShy = setRadiosFalse() },
-                )
-                Text(
-                    text = stringResource(id = R.string.opponent_shy),
-                    fontSize = 16.sp
-                )
             }
         }
         Spacer(modifier = Modifier.weight(.05f))
